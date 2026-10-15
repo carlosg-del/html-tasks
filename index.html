@@ -9,6 +9,12 @@
 body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#18212b}
 header{background:#17212b;color:#fff;padding:16px 22px}
 header h1{margin:0;font-size:24px}
+.question-nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;background:#e9eef4;border-bottom:1px solid #d8dee5}
+.question-nav button{min-width:34px;padding:7px 9px;background:#fff;border:1px solid #b8c3cf;color:#18212b}
+.question-nav button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.question-nav button.completed{box-shadow:inset 0 -3px 0 #16a34a}
+.question-nav button:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+
 .task{background:#fff;padding:14px 22px;border-bottom:1px solid #d8dee5;display:flex;align-items:center;gap:18px}
 .tasktext{flex:1}.tasktext strong{color:#2563eb;display:block;margin-bottom:5px}
 .tasktext small{display:block;color:#66717d;margin-top:8px}
@@ -35,6 +41,8 @@ button{border:0;border-radius:6px;padding:9px 14px;font-weight:600;cursor:pointe
 </head>
 <body>
 <header><h1>HTML Trace It</h1></header>
+<nav id="questionNav" class="question-nav" aria-label="Choose a question"></nav>
+
 
 <div class="task">
   <div class="tasktext">
@@ -191,7 +199,39 @@ const revealedCode=document.getElementById("revealedCode");
 const targetRevealBtn=document.getElementById("targetRevealBtn");
 const targetCode=document.getElementById("targetCode");
 
+
+const questionNav = document.getElementById("questionNav");
+const completedTasks = new Set();
+
+function buildQuestionNav(){
+  questionNav.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = String(index + 1);
+    button.setAttribute("aria-label", `Go to task ${index + 1}`);
+    button.title = `Go to task ${index + 1}`;
+    button.addEventListener("click", () => {
+      n = index;
+      buildQuestionNav();
+load();
+    });
+    questionNav.appendChild(button);
+  });
+  updateQuestionNav();
+}
+
+function updateQuestionNav(){
+  [...questionNav.querySelectorAll("button")].forEach((button, index) => {
+    button.classList.toggle("active", index === n);
+    button.classList.toggle("completed", completedTasks.has(index));
+    if(index === n) button.setAttribute("aria-current", "step");
+    else button.removeAttribute("aria-current");
+  });
+}
+
 function load(){
+  updateQuestionNav();
   document.getElementById("num").textContent=`Task ${n+1} of ${tasks.length}`;
   document.getElementById("task").textContent=tasks[n].q;
   editor.value="";
@@ -233,6 +273,8 @@ function check(){
     if(correct){
       feedback.className="feedback good";
       feedback.textContent="✓ Correct.";
+      completedTasks.add(n);
+      updateQuestionNav();
       if(n < tasks.length-1){
         setTimeout(()=>{n++;load()},650);
       }else{
