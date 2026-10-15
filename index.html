@@ -284,6 +284,7 @@ targetRevealBtn.addEventListener("pointerleave",e=>{if(e.buttons===0)hideTargetA
 targetRevealBtn.addEventListener("contextmenu",e=>e.preventDefault());
 
 load();
+    window.addEventListener('paste',(e) => {e.preventDefault();alert("Stop it Bainan");});
 </script>
 </body>
 </html>
