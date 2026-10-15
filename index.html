@@ -213,8 +213,7 @@ function buildQuestionNav(){
     button.title = `Go to task ${index + 1}`;
     button.addEventListener("click", () => {
       n = index;
-      buildQuestionNav();
-load();
+      load();
     });
     questionNav.appendChild(button);
   });
@@ -325,6 +324,7 @@ targetRevealBtn.addEventListener("pointercancel",hideTargetAnswer);
 targetRevealBtn.addEventListener("pointerleave",e=>{if(e.buttons===0)hideTargetAnswer()});
 targetRevealBtn.addEventListener("contextmenu",e=>e.preventDefault());
 
+buildQuestionNav();
 load();
     window.addEventListener('paste',(e) => {e.preventDefault();alert("Stop it Bainan");});
 </script>
